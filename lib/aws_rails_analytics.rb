@@ -20,6 +20,7 @@ module AwsRailsAnalytics
     #               [String] service            The aws service (default is amazon mobile analytics)
     #               [String] region             The aws region
     #               [String] app_id             The mobile anlaytics app id
+    # @return [Net::HTTP] response of analytics report
     def initialize aws_analytics_uri, options = {}
       default = {
           service: "mobileanalytics",
@@ -49,7 +50,7 @@ module AwsRailsAnalytics
       signed_request = sign_v4.sign(request)
 
       response = http.request(signed_request)
-      puts response.body
+      return response
     end
 
     def create_client_context client_id, app_title
