@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.version     = AwsRailsAnalytics::VERSION
   s.authors     = ["Nir Kain"]
   s.email       = ["nir@thumzap.com"]
-  s.homepage    = "TODO"
+  s.homepage    = "https://github.com/thumzap/aws-rails-analytics"
   s.summary     = "Send mobile analytics custom events from your rails server."
-  s.description = ""
+  s.description = %q{ Send mobile analytics custom events from your rails server. }
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
