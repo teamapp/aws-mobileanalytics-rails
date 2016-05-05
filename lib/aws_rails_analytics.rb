@@ -8,7 +8,7 @@ require_relative 'aws_rails_analytics/aws_sign_request'
 
 module AwsRailsAnalytics
   class Reporter
-    attr_reader :aws_analytics_uri, :sign_v4, :user_agent
+    attr_reader :aws_analytics_uri, :sign_v4, :user_agent, :app_id
 
     # @param [String] aws_analytics_uri The amazon mobile analytics endpont
     # @param [Hash] options:
@@ -33,7 +33,7 @@ module AwsRailsAnalytics
       @app_id = options[:app_id]
     end
 
-    def report_event client_id, app_title, event_name, attributes = {}, metrics = {}
+    def report_event client_id, session_id, app_title, event_name, attributes = {}, metrics = {}
 
       http = Net::HTTP.new(aws_analytics_uri.host, aws_analytics_uri.port)
       http.use_ssl = (aws_analytics_uri.scheme == "https")
@@ -43,7 +43,7 @@ module AwsRailsAnalytics
       request["User-Agent"] = user_agent
       request["Content-Type"] = "application/json"
       request["x-amz-Client-Context"] = create_client_context(client_id, app_title)
-      request.body = create_analytics_data(event_name, "<session_id>", attributes, metrics)
+      request.body = create_analytics_data(event_name, session_id, attributes, metrics)
 
       signed_request = sign_v4.sign(request)
 
@@ -58,7 +58,8 @@ module AwsRailsAnalytics
               "app_title" => app_title
           },
           "env" => {
-              "platform" => "SERVER"
+              "platform" => "linux",
+              "model" => "SERVER"
           },
           "services" => {
               "mobile_analytics" => {
