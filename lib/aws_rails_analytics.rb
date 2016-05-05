@@ -2,6 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'time'
+require 'aws_rails_analytics/version'
 
 require_relative 'aws_rails_analytics/aws_credentials'
 require_relative 'aws_rails_analytics/aws_sign_request'
@@ -63,7 +64,9 @@ module AwsRailsAnalytics
           },
           "services" => {
               "mobile_analytics" => {
-                  "app_id" => app_id
+                  "app_id" => app_id,
+                  "sdk_name" => "aws_rails_analytics",
+                  "sdk_verson" => AwsRailsAnalytics::VERSION
               }
           }
       }
@@ -77,7 +80,7 @@ module AwsRailsAnalytics
       aws_analytics_data = {"events" => [{
                                              "eventType" => event_name,
                                              "timestamp" => timestamp,
-                                             "session" => {"id" => session_id, "startTimestamp" => "<session_start_timestamp>"},
+                                             "session" => {"id" => session_id, "startTimestamp" => timestamp},
                                              "attributes" => attributes,
                                              "metrics" => metrics
                                          }]}
