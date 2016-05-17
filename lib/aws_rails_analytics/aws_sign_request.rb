@@ -53,6 +53,7 @@ module AwsRailsAnalytics
         datetime = Time.now.utc.strftime("%Y%m%dT%H%M%SZ")
         body_digest = req['X-Amz-Content-Sha256'] || hexdigest(req.body)
         req['X-Amz-Date'] = datetime
+        req['Host'] = @uri.host
         req['X-Amz-Security-Token'] = @credentials.session_token if
             @credentials.session_token
         req['X-Amz-Content-Sha256'] ||= body_digest
@@ -87,6 +88,7 @@ module AwsRailsAnalytics
         parts << datetime
         parts << credential_scope(datetime)
         parts << hexdigest(canonical_request(request, body_digest))
+        #puts hexdigest(canonical_request(request, body_digest))
         parts.join("\n")
       end
 
@@ -100,7 +102,7 @@ module AwsRailsAnalytics
       end
 
       def canonical_request(request, body_digest)
-        [
+        a = [
             request.method,
             @uri.path,
             normalized_querystring(@uri.query || ""),
@@ -108,6 +110,7 @@ module AwsRailsAnalytics
             signed_headers(request),
             body_digest
         ].join("\n")
+        return a
       end
 
       def normalized_querystring(querystring)
@@ -148,7 +151,7 @@ module AwsRailsAnalytics
           headers << [k,v] unless BLACKLIST_HEADERS.include?(k)
         end
         headers = headers.sort_by(&:first)
-        headers.map{|k,v| "#{k}:#{canonical_header_value(v.to_s)}" }.join("\n")
+        headers.map{|k,v| "#{k}:#{canonical_header_value(v[0].to_s)}" }.join("\n")
       end
 
       def canonical_header_value(value)
