@@ -1,4 +1,4 @@
-module AwsRailsAnalytics
+module AwsmaRails
   class Reporter
     class Credentials
 

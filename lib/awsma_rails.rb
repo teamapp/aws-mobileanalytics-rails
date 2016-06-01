@@ -2,12 +2,12 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'time'
-require 'aws_rails_analytics/version'
+require 'awsma_rails/version'
 
-require_relative 'aws_rails_analytics/aws_credentials'
-require_relative 'aws_rails_analytics/aws_sign_request'
+require_relative 'awsma_rails/aws_credentials'
+require_relative 'awsma_rails/aws_sign_request'
 
-module AwsRailsAnalytics
+module AwsmaRails
   class Reporter
     attr_reader :aws_analytics_uri, :user_agent, :app_id, :cognito_pool_id, :cognito_credentials
 
@@ -56,19 +56,18 @@ module AwsRailsAnalytics
       response
     end
 
-    # @return [AwsRailsAnalytics::Reporter::Credentials]  The newly generated cognito credentials
+    # @return [AwsmaRails::Reporter::Credentials]  The newly generated cognito credentials
     def get_cognito_credentials
       aws_cognito_uri = URI.parse("https://cognito-identity.us-east-1.amazonaws.com")
 
       getid_response = cognito_getid(aws_cognito_uri)
       identityid = JSON.parse(getid_response.body)["IdentityId"]
+
       getcredentials_response = cognito_getcredentials(aws_cognito_uri, identityid)
 
       parsed_credentials = JSON.parse(getcredentials_response.body)["Credentials"]
-      credentials = Credentials.new(parsed_credentials["AccessKeyId"], parsed_credentials["SecretKey"], parsed_credentials["SessionToken"])
+      Credentials.new(parsed_credentials["AccessKeyId"], parsed_credentials["SecretKey"], parsed_credentials["SessionToken"])
     end
-
-    private
 
     def create_client_context client_id, app_title
       aws_client_context = {
@@ -84,7 +83,7 @@ module AwsRailsAnalytics
               "mobile_analytics" => {
                   "app_id" => app_id,
                   "sdk_name" => "aws_rails_analytics",
-                  "sdk_verson" => AwsRailsAnalytics::VERSION
+                  "sdk_verson" => AwsmaRails::VERSION
               }
           }
       }
@@ -122,7 +121,7 @@ module AwsRailsAnalytics
           "Logins" => {}
       }.to_json
 
-      response = http.request(request)
+      http.request(request)
     end
 
     def cognito_getcredentials aws_cognito_uri, identityid
@@ -139,7 +138,7 @@ module AwsRailsAnalytics
         "Logins" => {}
       }.to_json
 
-      response = http.request(request)
+      http.request(request)
     end
 
   end

@@ -1,7 +1,7 @@
 require 'time'
 require 'openssl'
 
-module AwsRailsAnalytics
+module AwsmaRails
   class Reporter
     class SignV4
 

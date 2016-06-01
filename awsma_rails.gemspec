@@ -1,15 +1,15 @@
 $:.push File.expand_path("../lib", __FILE__)
 
 # Maintain your gem's version:
-require "aws_rails_analytics/version"
+require "awsma_rails/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = "aws_rails_analytics"
-  s.version     = AwsRailsAnalytics::VERSION
+  s.name        = "awsma_rails"
+  s.version     = AwsmaRails::VERSION
   s.authors     = ["Nir Kain"]
   s.email       = ["nir@thumzap.com"]
-  s.homepage    = "https://github.com/thumzap/aws-rails-analytics"
+  s.homepage    = "https://github.com/thumzap/awsma_rails"
   s.summary     = "Send mobile analytics custom events from your rails server."
   s.description = %q{ Send mobile analytics custom events from your rails server. }
   s.license     = "MIT"
