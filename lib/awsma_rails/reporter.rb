@@ -35,8 +35,8 @@ module AwsmaRails
 
       if response.code === '403' &&
           (JSON.parse(response.body)['message'] === 'The security token included in the request is expired')
-        @cognito_credentials = @aws_cognito_manager.generate_credentials
-        return report_event(client_id, session_id, app_title, event_name, attributes, metrics)
+        awsma_request.refresh_credentials(@aws_cognito_manager.generate_credentials)
+        response = awsma_request.send_request
       end
 
       response
