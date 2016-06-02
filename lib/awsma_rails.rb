@@ -82,8 +82,8 @@ module AwsmaRails
           "services" => {
               "mobile_analytics" => {
                   "app_id" => app_id,
-                  "sdk_name" => "aws_rails_analytics",
-                  "sdk_verson" => AwsmaRails::VERSION
+                  "sdk_name" => "awsma_rails",
+                  "sdk_version" => AwsmaRails::VERSION
               }
           }
       }
