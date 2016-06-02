@@ -25,12 +25,13 @@ module AwsmaRails
 
     # @param  [String]  client_id   The users mobile analytics client id
     # @param  [String]  session_id  The users mobile analytics current session id (if there is no session just enter an empty string or something like "no-session")
-    # @param  [String]  app_title   The current app the user is in
+    # @param  [String]  app_title   The app title (ex: Fun Game)
+    # @param  [String]  app_package_name  The app package name (ex: com.example.fungame)
     # @param  [String]  event_name  The name of the custom event to be reported to amazon
     # @param  [Hash]    attributes  The custom events attributes (optional)
     # @param  [Hash]    metrics     The custom events metrics (optional)
     # @return [Net::HTTP] response of analytics report (response code should be 202 if successful)
-    def report_event client_id, session_id, app_title, event_name, attributes = {}, metrics = {}
+    def report_event client_id, session_id, app_title, app_package_name, event_name, attributes = {}, metrics = {}
       sign_v4 = SignV4.new(cognito_credentials, "mobileanalytics", "us-east-1", aws_analytics_uri)
 
       http = Net::HTTP.new(aws_analytics_uri.host, aws_analytics_uri.port)
@@ -40,7 +41,7 @@ module AwsmaRails
 
       request["User-Agent"] = user_agent
       request["Content-Type"] = "application/x-amz-json-1.0"
-      request["x-amz-Client-Context"] = create_client_context(client_id, app_title)
+      request["x-amz-Client-Context"] = create_client_context(client_id, app_title, app_package_name)
       request.body = create_analytics_data(event_name, session_id, attributes, metrics)
 
       signed_request = sign_v4.sign(request)
@@ -69,11 +70,12 @@ module AwsmaRails
       Credentials.new(parsed_credentials["AccessKeyId"], parsed_credentials["SecretKey"], parsed_credentials["SessionToken"])
     end
 
-    def create_client_context client_id, app_title
+    def create_client_context client_id, app_title, app_package_name
       aws_client_context = {
           "client" => {
               "client_id" => client_id,
-              "app_title" => app_title
+              "app_title" => app_title,
+              "app_package_name" => app_package_name
           },
           "env" => {
               "platform" => "linux",
