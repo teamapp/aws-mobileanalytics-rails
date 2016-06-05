@@ -16,7 +16,7 @@ module AwsmaRails
 
       identity_id = JSON.parse(get_id_response.body)['IdentityId']
 
-      get_credentials_response = send_cognito_request('AWSCognitoIdentityService.GetId',
+      get_credentials_response = send_cognito_request('AWSCognitoIdentityService.GetCredentialsForIdentity',
                                                       {
                                                           'IdentityId' => identity_id,
                                                           'Logins' => {}
