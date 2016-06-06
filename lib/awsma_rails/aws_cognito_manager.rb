@@ -1,3 +1,5 @@
+require 'json'
+
 module AwsmaRails
   class AwsCognitoManager
     def initialize(user_agent, cognito_pool_id)
