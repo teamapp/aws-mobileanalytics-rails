@@ -4,6 +4,7 @@ require_relative 'awsma_rails/aws_post_request'
 require_relative 'awsma_rails/aws_signed_request_v4'
 require_relative 'awsma_rails/awsma_post_request'
 require_relative 'awsma_rails/reporter'
+require_relative 'awsma_rails/version'
 
 module AwsmaRails
 end
