@@ -1,6 +1,5 @@
 module AwsmaRails
   class Reporter
-
     # @param [String] awsma_endpoint_url The aws mobile analytics endpoint URL
     # @param [String] awsma_app_id       The aws mobile analytics app id
     # @param [String] cognito_pool_id    The aws cognito identity pool id
@@ -44,6 +43,22 @@ module AwsmaRails
 
     private
 
+    def create_analytics_data(event_name, session_id, attributes, metrics)
+      timestamp = Time.now.utc.iso8601
+
+      aws_analytics_data = {'events' => [{
+                                             'eventType' => event_name,
+                                             'timestamp' => timestamp,
+                                             'version' => 'v2.0',
+                                             'session' => {'id' => session_id,
+                                                           'startTimestamp' => timestamp},
+                                             'attributes' => attributes,
+                                             'metrics' => metrics
+                                         }]}
+
+      aws_analytics_data.to_json
+    end
+
     def create_client_context(client_id, app_title, app_package_name)
       aws_client_context = {
           'client' => {
@@ -65,22 +80,6 @@ module AwsmaRails
       }
 
       aws_client_context.to_json
-    end
-
-    def create_analytics_data(event_name, session_id, attributes, metrics)
-      timestamp = Time.now.utc.iso8601
-
-      aws_analytics_data = {'events' => [{
-                                             'eventType' => event_name,
-                                             'timestamp' => timestamp,
-                                             'version' => 'v2.0',
-                                             'session' => {'id' => session_id,
-                                                           'startTimestamp' => timestamp},
-                                             'attributes' => attributes,
-                                             'metrics' => metrics
-                                         }]}
-
-      aws_analytics_data.to_json
     end
   end
 end
