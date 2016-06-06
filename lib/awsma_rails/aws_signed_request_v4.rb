@@ -43,7 +43,7 @@ module AwsmaRails
     # @param [URI] uri request uri
     def initialize(credentials, service_name, region, uri)
       @service_name = service_name
-      @credentials = credentials.credentials
+      @credentials = credentials
       @region = region
       @uri = uri
     end
