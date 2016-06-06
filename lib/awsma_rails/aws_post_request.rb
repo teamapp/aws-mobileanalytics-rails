@@ -11,11 +11,11 @@ module AwsmaRails
       @request['User-Agent'] = user_agent
       @request['Content-Type'] = 'application/x-amz-json-1.0'
 
-      if custom_aws_target.present?
+      if !custom_aws_target.nil?
         @request['X-Amz-Target'] = custom_aws_target
       end
 
-      if custom_aws_client_context.present?
+      if !custom_aws_client_context.nil?
         @request['x-amz-Client-Context'] = custom_aws_client_context
       end
 
