@@ -1,3 +1,0 @@
-= AwsmaRails
-
-Amazon Mobile Analytics server side rails support.
