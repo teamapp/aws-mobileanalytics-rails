@@ -24,8 +24,23 @@ module AwsmaRails
     # @param  [Hash]    metrics     The custom events metrics (optional)
     # @return [Net::HTTP] response of analytics report (response code should be 202 if successful)
     def report_event(client_id, session_id, app_title, app_package_name, event_name, attributes = {}, metrics = {})
+      events = [{
+                  'event_name' => event_name,
+                  'session_id' => session_id,
+                  'attributes' => attributes,
+                  'metrics' => metrics
+                }]
+
+      self.report_events(client_id, app_title, app_package_name, events)
+    end
+
+    # @param  [String]  client_id   The users mobile analytics client id
+    # @param  [String]  app_title   The app title (ex: Fun Game)
+    # @param  [String]  app_package_name  The app package name (ex: com.example.fungame)
+    # @return [Net::HTTP] response of analytics report (response code should be 202 if successful)
+    def report_events(client_id, app_title, app_package_name, events = [{'event_name' => '', 'session_id' => '', 'attributes' => {}, 'metrics' => {}}])
       awsma_request = AwsmaPostRequest.new(@awsma_endpoint_url,
-                                           create_analytics_data(event_name, session_id, attributes, metrics),
+                                           create_analytics_batch_data(events),
                                            @user_agent,
                                            create_client_context(client_id, app_title, app_package_name),
                                            @cognito_credentials)
@@ -42,6 +57,29 @@ module AwsmaRails
     end
 
     private
+
+    def create_analytics_batch_data(events)
+      aws_analytics_data = events.inject([]) do |hash_events, event|
+        event = event.symbolize_keys
+        timestamp = Time.now.utc.iso8601
+
+        hash_events << {
+            'eventType' => event[:event_name],
+            'timestamp' => timestamp,
+            'version' => 'v2.0',
+            'session' => {
+                'id' => event[:session_id],
+                'startTimestamp' => timestamp
+            },
+            'attributes' => event[:attributes],
+            'metrics' => event[:metrics]
+        }
+
+        hash_events
+      end
+
+      { 'events' => aws_analytics_data}.to_json
+    end
 
     def create_analytics_data(event_name, session_id, attributes, metrics)
       timestamp = Time.now.utc.iso8601
@@ -83,4 +121,3 @@ module AwsmaRails
     end
   end
 end
-
