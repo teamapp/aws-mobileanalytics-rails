@@ -7,13 +7,13 @@ This gem provide a simple way to report analytics events to Amazon Mobile Analyt
 Install the latest stable release:
 
 ```
-$ gem install awsma_rails https://github.com/thumzap/awsma_rails.git
+$ gem install awsma_rails https://github.com/teamapp/awsma_rails.git
 ```
 
 In Rails, add it to your Gemfile:
 
 ```ruby
-gem 'awsma_rails', :git => 'https://github.com/thumzap/awsma_rails.git'
+gem 'awsma_rails', :git => 'https://github.com/teamapp/awsma_rails.git'
 ```
 
 Finally, restart the server to apply the changes.
