@@ -1,3 +1,5 @@
+require 'net/http'
+
 module AwsmaRails
   class AwsPostRequest
     def initialize(endpoint_url, body, user_agent, custom_aws_target = nil, custom_aws_client_context = nil)
