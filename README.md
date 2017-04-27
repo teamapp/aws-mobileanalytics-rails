@@ -59,14 +59,38 @@ app_package_name = ..
 # THE EVENT NAME
 event_name = ..
 
-# A HASH THAT CONTAINS THE EVENT ATTRIBUTES
+# THE PLATFORM OF THE DEVICE: android, iOS, linux
+platform = ..
+
+# THE PLATFORM MODEL OF THE DEVICE 
+model = ..
+
+# THE EVENT NAME
+event_name = ..
+
+# A HASH THAT CONTAINS THE EVENT ATTRIBUTES: Key-value pair
 attributes = ..
 
-# A HASH THAT CONTAINS THE EVENT METRICS
+# A HASH THAT CONTAINS THE EVENT METRICS: Key-value pair
 metrics = ..
 
+# FOR SINGLE EVENT
 reporter.report_event(client_id, session_id, app_title,
-                      app_package_name, event_name, attributes, metrics)
+                      app_package_name, event_name, 
+                      platform, model, 
+                      attributes, metrics)
+
+
+# FOR MULTIPLE EVENTS
+events = [{
+  'event_name': event_name,
+  'session_id': session_id,
+  'attributes': {},
+  'metrics': {}
+}, ...]
+
+reporter.report_events(client_id, app_title, app_package_name, 
+                       platform, model, events)
 ```
 
 ## License
