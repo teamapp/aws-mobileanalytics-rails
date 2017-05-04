@@ -20,29 +20,34 @@ module AwsmaRails
     # @param  [String]  app_title   The app title (ex: Fun Game)
     # @param  [String]  app_package_name  The app package name (ex: com.example.fungame)
     # @param  [String]  event_name  The name of the custom event to be reported to amazon
+    # @param  [String]  platform  The device platform
+    # @param  [String]  device_model  The device model
     # @param  [Hash]    attributes  The custom events attributes (optional)
     # @param  [Hash]    metrics     The custom events metrics (optional)
     # @return [Net::HTTP] response of analytics report (response code should be 202 if successful)
-    def report_event(client_id, session_id, app_title, app_package_name, event_name, platform, model, attributes = {}, metrics = {})
+    def report_event(client_id, session_id, app_title, app_package_name, event_name, platform, device_model, attributes = {}, metrics = {})
       events = [{
                   'event_name' => event_name,
                   'session_id' => session_id,
+                  'platform' => platform,
+                  'device_model' => device_model,
                   'attributes' => attributes,
                   'metrics' => metrics
                 }]
 
-      self.report_events(client_id, app_title, app_package_name, platform, model, events)
+      self.report_events(client_id, app_title, app_package_name, events)
     end
 
     # @param  [String]  client_id   The users mobile analytics client id
     # @param  [String]  app_title   The app title (ex: Fun Game)
     # @param  [String]  app_package_name  The app package name (ex: com.example.fungame)
+    # @param  [Array]   events  The array of event descriptions
     # @return [Net::HTTP] response of analytics report (response code should be 202 if successful)
-    def report_events(client_id, app_title, app_package_name, platform, model, events = [{'event_name' => '', 'session_id' => '', 'attributes' => {}, 'metrics' => {}}])
+    def report_events(client_id, app_title, app_package_name, events = [{'event_name' => '', 'session_id' => '', 'platform' => nil, 'device_model' => nil, 'attributes' => {}, 'metrics' => {}}])
       awsma_request = AwsmaPostRequest.new(@awsma_endpoint_url,
                                            create_analytics_data(events),
                                            @user_agent,
-                                           create_client_context(client_id, app_title, app_package_name, platform, model),
+                                           create_client_context(client_id, app_title, app_package_name, events.first['platform'], event.first['device_model']),
                                            @cognito_credentials)
 
       response = awsma_request.send_request
@@ -83,7 +88,10 @@ module AwsmaRails
       aws_analytics_data.to_json
     end
 
-    def create_client_context(client_id, app_title, app_package_name, platform = 'linux', model = 'SERVER')
+    def create_client_context(client_id, app_title, app_package_name, platform, device_model)
+      platform = 'linux' if platform.nil?
+      device_model = 'SERVER' if device_model.nil?
+
       aws_client_context = {
           'client' => {
               'client_id' => client_id,
@@ -92,7 +100,7 @@ module AwsmaRails
           },
           'env' => {
               'platform' => platform,
-              'model' => model
+              'model' => device_model
           },
           'services' => {
               'mobile_analytics' => {
