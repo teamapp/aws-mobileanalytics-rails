@@ -47,7 +47,7 @@ module AwsmaRails
       awsma_request = AwsmaPostRequest.new(@awsma_endpoint_url,
                                            create_analytics_data(events),
                                            @user_agent,
-                                           create_client_context(client_id, app_title, app_package_name, events.first['platform'], event.first['device_model']),
+                                           create_client_context(client_id, app_title, app_package_name, events.first['platform'], events.first['device_model']),
                                            @cognito_credentials)
 
       response = awsma_request.send_request
