@@ -66,7 +66,7 @@ module AwsmaRails
     def create_analytics_data(events)
       request_events = events.inject([]) do |request_events, event|
         event = event.symbolize_keys
-        timestamp = Time.now.utc.iso8601
+        timestamp = event[:timestamp] || Time.now.utc.iso8601
 
         request_events << {
             'eventType' => event[:event_name],
